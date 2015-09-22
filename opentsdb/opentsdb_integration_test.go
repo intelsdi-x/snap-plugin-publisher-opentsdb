@@ -1,3 +1,6 @@
+//
+// +build integration
+
 package opentsdb
 
 import (
@@ -21,10 +24,7 @@ func TestOpentsdbPublish(t *testing.T) {
 		config["port"] = ctypes.ConfigValueInt{Value: 4242}
 
 		ip := NewOpentsdbPublisher()
-		So(ip, ShouldNotBeNil)
-
 		policy := ip.GetConfigPolicy()
-		So(policy, ShouldNotBeNil)
 
 		Convey("Publish", func() {
 			var buf bytes.Buffer
