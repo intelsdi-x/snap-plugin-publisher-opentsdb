@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
-	"os"
 	"strings"
 	"time"
 
@@ -85,10 +84,6 @@ func (p *opentsdbPublisher) Publish(contentType string, content []byte, config m
 		handleErr(err)
 	}
 
-	//Only host tag is supported now.
-	//Dynamic tagging requires plugin change.
-	hostname, _ := os.Hostname()
-
 	pts := make([]DataPoint, len(metrics))
 	var temp DataPoint
 	var i = 0
@@ -98,7 +93,7 @@ func (p *opentsdbPublisher) Publish(contentType string, content []byte, config m
 			Timestamp: m.Timestamp().Unix(),
 			Value:     m.Data(),
 			Tags: map[string]StringValue{
-				host: StringValue(hostname),
+				host: StringValue(m.Source()),
 			},
 		}
 
