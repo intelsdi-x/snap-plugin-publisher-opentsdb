@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
-	"time"
-	"strings"
 	"os"
+	"strings"
+	"time"
 
 	log "github.com/Sirupsen/logrus"
 
@@ -18,12 +18,12 @@ import (
 )
 
 const (
-	name       	= "opentsdb"
-	version    	= 1
-	pluginType 	= plugin.PublisherPluginType
-	timeout    	= 5
-	host    	= "host"
-	source 		= "source"
+	name       = "opentsdb"
+	version    = 1
+	pluginType = plugin.PublisherPluginType
+	timeout    = 5
+	host       = "host"
+	source     = "source"
 )
 
 // Meta returns a plugin meta data
@@ -88,7 +88,7 @@ func (p *opentsdbPublisher) Publish(contentType string, content []byte, config m
 	//Only host tag is supported now.
 	//Dynamic tagging requires plugin change.
 	hostname, _ := os.Hostname()
-	
+
 	pts := make([]DataPoint, len(metrics))
 	var temp DataPoint
 	var i = 0
