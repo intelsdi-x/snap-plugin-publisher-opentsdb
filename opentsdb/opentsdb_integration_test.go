@@ -19,40 +19,38 @@ import (
 func TestOpentsdbPublish(t *testing.T) {
 	config := make(map[string]ctypes.ConfigValue)
 
-	Convey("TestOpentsdb", t, func() {
+	Convey("Pulse Plugin integration testing with OpenTSDB", t, func() {
+		var buf bytes.Buffer
+		buf.Reset()
+		enc := gob.NewEncoder(&buf)
+
 		config["host"] = ctypes.ConfigValueStr{Value: os.Getenv("PULSE_OPENTSDB_HOST")}
 		config["port"] = ctypes.ConfigValueInt{Value: 4242}
 
-		ip := NewOpentsdbPublisher()
-		policy := ip.GetConfigPolicy()
+		op := NewOpentsdbPublisher()
+		cp := op.GetConfigPolicy()
+		cfg, _ := cp.Get([]string{""}).Process(config)
 
-		Convey("Publish", func() {
-			var buf bytes.Buffer
+		Convey("Publish float metrics to OpenTSDB", func() {
 			metrics := []plugin.PluginMetricType{
 				*plugin.NewPluginMetricType([]string{"/psutil/load/load15"}, time.Now(), "mac1", 23.1),
 				*plugin.NewPluginMetricType([]string{"/psutil/vm/available"}, time.Now().Add(2*time.Second), "mac2", 23.2),
 				*plugin.NewPluginMetricType([]string{"/psutil/load/load1"}, time.Now().Add(3*time.Second), "linux3", 23.3),
 			}
-			enc := gob.NewEncoder(&buf)
 			enc.Encode(metrics)
 
-			Convey("float", func() {
-				err := ip.Publish(plugin.PulseGOBContentType, buf.Bytes(), config)
-				So(err, ShouldBeNil)
-			})
-
-			Convey("int", func() {
-				metrics = []plugin.PluginMetricType{
-					*plugin.NewPluginMetricType([]string{"/psutil/vm/free"}, time.Now().Add(5*time.Second), "linux7", 23),
-				}
-				buf.Reset()
-				enc = gob.NewEncoder(&buf)
-				enc.Encode(metrics)
-
-				err := ip.Publish(plugin.PulseGOBContentType, buf.Bytes(), config)
-				So(err, ShouldBeNil)
-			})
+			err := op.Publish(plugin.PulseGOBContentType, buf.Bytes(), *cfg)
+			So(err, ShouldBeNil)
 		})
 
+		Convey("Publish int metrics to OpenTSDB", func() {
+			metrics := []plugin.PluginMetricType{
+				*plugin.NewPluginMetricType([]string{"/psutil/vm/free"}, time.Now().Add(5*time.Second), "linux7", 23),
+			}
+			enc.Encode(metrics)
+
+			err := op.Publish(plugin.PulseGOBContentType, buf.Bytes(), *cfg)
+			So(err, ShouldBeNil)
+		})
 	})
 }
