@@ -114,16 +114,14 @@ func (p *opentsdbPublisher) Publish(contentType string, content []byte, config m
 		return nil
 	}
 
-	logger.Printf("pts %+v \n", pts)
-
 	td := time.Duration(timeout * time.Second)
 	con := NewClient(u.String(), td)
 	err = con.Post(pts)
 	if err != nil {
 		logger.Printf("Error: '%s' posting metrics: %+v", err.Error(), metrics)
+		return err
 	}
 
-	logger.Printf("writing %+v \n", metrics)
 	return nil
 }
 
