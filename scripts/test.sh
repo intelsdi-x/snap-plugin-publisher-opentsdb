@@ -82,5 +82,12 @@ if [[ $TEST_SUITE == "unit" ]]; then
 	#     done
 	# fi
 elif [[ $TEST_SUITE == "integration" ]]; then
-	PULSE_OPENTSDB_HOST="127.0.0.1" go test -v --tags=integration ./...
+	sudo service docker restart; sleep 10
+	docker run -d -p 4242:4242 --name=opentsdb opower/opentsdb:latest
+	ip=`docker inspect -f '{{ .NetworkSettings.IPAddress }}' opentsdb`
+	while ! curl --silent -G "http://${ip}:4242" 2>&1 > /dev/null ; do
+		sleep 1
+		echo -n "."
+	done
+	PULSE_OPENTSDB_HOST=$ip go test -v --tags=integration ./...
 fi
