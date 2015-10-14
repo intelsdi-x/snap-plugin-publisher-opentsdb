@@ -45,7 +45,7 @@ func TestOpentsdbPublish(t *testing.T) {
 		config["port"] = ctypes.ConfigValueInt{Value: 4242}
 
 		op := NewOpentsdbPublisher()
-		cp := op.GetConfigPolicy()
+		cp, _ := op.GetConfigPolicy()
 		cfg, _ := cp.Get([]string{""}).Process(config)
 
 		Convey("Publish float metrics to OpenTSDB", func() {

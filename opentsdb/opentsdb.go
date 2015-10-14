@@ -37,7 +37,7 @@ import (
 
 const (
 	name       = "opentsdb"
-	version    = 1
+	version    = 2
 	pluginType = plugin.PublisherPluginType
 	timeout    = 5
 	host       = "host"
@@ -57,7 +57,7 @@ func NewOpentsdbPublisher() *opentsdbPublisher {
 type opentsdbPublisher struct {
 }
 
-func (p *opentsdbPublisher) GetConfigPolicy() cpolicy.ConfigPolicy {
+func (p *opentsdbPublisher) GetConfigPolicy() (*cpolicy.ConfigPolicy, error) {
 	cp := cpolicy.New()
 	config := cpolicy.NewPolicyNode()
 
@@ -72,7 +72,7 @@ func (p *opentsdbPublisher) GetConfigPolicy() cpolicy.ConfigPolicy {
 	config.Add(r2)
 
 	cp.Add([]string{""}, config)
-	return *cp
+	return cp, nil
 }
 
 // Publish publishes metric data to opentsdb.
