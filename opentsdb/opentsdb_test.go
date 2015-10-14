@@ -45,13 +45,16 @@ func TestOpenTSDBPlugin(t *testing.T) {
 		Convey("So opentsdb publisher should be of opentsdbPublisher type", func() {
 			So(op, ShouldHaveSameTypeAs, &opentsdbPublisher{})
 		})
+		configPolicy, err := op.GetConfigPolicy()
 		Convey("op.GetConfigPolicy() should return a config policy", func() {
-			configPolicy := op.GetConfigPolicy()
 			Convey("So config policy should not be nil", func() {
 				So(configPolicy, ShouldNotBeNil)
 			})
+			Convey("So getting config policy should not return an error", func() {
+				So(err, ShouldBeNil)
+			})
 			Convey("So config policy should be a cpolicy.ConfigPolicy", func() {
-				So(configPolicy, ShouldHaveSameTypeAs, cpolicy.ConfigPolicy{})
+				So(configPolicy, ShouldHaveSameTypeAs, &cpolicy.ConfigPolicy{})
 			})
 			testConfig := make(map[string]ctypes.ConfigValue)
 			testConfig["host"] = ctypes.ConfigValueStr{Value: "localhost"}
