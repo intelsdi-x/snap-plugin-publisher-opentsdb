@@ -8,12 +8,9 @@
 			"Rev": "55eb11d21d2a31a3cc93838241d04800f52e823d"
 		},
 		{
-			"ImportPath": "github.com/intelsdi-x/gomit",
-			"Rev": "4f098da2bbb51d787be003e4abfbc25d01837564"
-		},
-		{
 			"ImportPath": "github.com/intelsdi-x/pulse",
-			"Rev": "544d1d673afb6b7e6f2f07331da79fb4de143d7e"
+			"Comment": "v0.8.0-beta",
+			"Rev": "de2881352745c206284b74f4ef1165ba4510971a"
 		},
 		{
 			"ImportPath": "github.com/jtolds/gls",
