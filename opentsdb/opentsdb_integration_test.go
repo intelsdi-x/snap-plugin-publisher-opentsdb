@@ -50,9 +50,9 @@ func TestOpentsdbPublish(t *testing.T) {
 
 		Convey("Publish float metrics to OpenTSDB", func() {
 			metrics := []plugin.PluginMetricType{
-				*plugin.NewPluginMetricType([]string{"/psutil/load/load15"}, time.Now(), "mac1", 23.1),
-				*plugin.NewPluginMetricType([]string{"/psutil/vm/available"}, time.Now().Add(2*time.Second), "mac2", 23.2),
-				*plugin.NewPluginMetricType([]string{"/psutil/load/load1"}, time.Now().Add(3*time.Second), "linux3", 23.3),
+				*plugin.NewPluginMetricType([]string{"/psutil/load/load15"}, time.Now(), "mac1", nil, nil, 23.1),
+				*plugin.NewPluginMetricType([]string{"/psutil/vm/available"}, time.Now().Add(2*time.Second), "mac2", nil, nil, 23.2),
+				*plugin.NewPluginMetricType([]string{"/psutil/load/load1"}, time.Now().Add(3*time.Second), "linux3", nil, nil, 23.3),
 			}
 			enc.Encode(metrics)
 
@@ -62,7 +62,7 @@ func TestOpentsdbPublish(t *testing.T) {
 
 		Convey("Publish int metrics to OpenTSDB", func() {
 			metrics := []plugin.PluginMetricType{
-				*plugin.NewPluginMetricType([]string{"/psutil/vm/free"}, time.Now().Add(5*time.Second), "linux7", 23),
+				*plugin.NewPluginMetricType([]string{"/psutil/vm/free"}, time.Now().Add(5*time.Second), "linux7", nil, nil, 23),
 			}
 			enc.Encode(metrics)
 
