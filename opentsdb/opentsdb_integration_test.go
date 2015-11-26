@@ -27,8 +27,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/intelsdi-x/pulse/control/plugin"
-	"github.com/intelsdi-x/pulse/core/ctypes"
+	"github.com/intelsdi-x/snap/control/plugin"
+	"github.com/intelsdi-x/snap/core/ctypes"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -36,12 +36,12 @@ import (
 func TestOpentsdbPublish(t *testing.T) {
 	config := make(map[string]ctypes.ConfigValue)
 
-	Convey("Pulse Plugin integration testing with OpenTSDB", t, func() {
+	Convey("Snap Plugin integration testing with OpenTSDB", t, func() {
 		var buf bytes.Buffer
 		buf.Reset()
 		enc := gob.NewEncoder(&buf)
 
-		config["host"] = ctypes.ConfigValueStr{Value: os.Getenv("PULSE_OPENTSDB_HOST")}
+		config["host"] = ctypes.ConfigValueStr{Value: os.Getenv("SNAP_OPENTSDB_HOST")}
 		config["port"] = ctypes.ConfigValueInt{Value: 4242}
 
 		op := NewOpentsdbPublisher()
@@ -56,7 +56,7 @@ func TestOpentsdbPublish(t *testing.T) {
 			}
 			enc.Encode(metrics)
 
-			err := op.Publish(plugin.PulseGOBContentType, buf.Bytes(), *cfg)
+			err := op.Publish(plugin.SnapGOBContentType, buf.Bytes(), *cfg)
 			So(err, ShouldBeNil)
 		})
 
@@ -66,7 +66,7 @@ func TestOpentsdbPublish(t *testing.T) {
 			}
 			enc.Encode(metrics)
 
-			err := op.Publish(plugin.PulseGOBContentType, buf.Bytes(), *cfg)
+			err := op.Publish(plugin.SnapGOBContentType, buf.Bytes(), *cfg)
 			So(err, ShouldBeNil)
 		})
 	})
