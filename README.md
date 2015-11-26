@@ -17,17 +17,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-# pulse-plugin-publisher-opentsdb
-Pulse Publisher Plugin to OpenTSDB
+# snap-plugin-publisher-opentsdb
+Snap Publisher Plugin to OpenTSDB
 
 ## Description
-	This plugin publishes data into OpenTSDB for Pulse compliant collectors.
+	This plugin publishes data into OpenTSDB for Snap compliant collectors.
 
 ## Dependencies
-	It requires project Pulse: https://github.com/intelsdi-x/pulse.
+	It requires project Snap: https://github.com/intelsdi-x/snap.
 
 ## Configuration
-1. Set PULSE_PATH envoriment variable for running an example.
+1. Set SNAP_PATH envoriment variable for running an example.
 2. Set ULSE_OPENTSDB_HOST for integration test.
 3. Run the example from the root directory. E.g. ./examples/run-opentsdb-psutil.sh <instance-name>
 

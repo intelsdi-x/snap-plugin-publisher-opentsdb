@@ -107,5 +107,5 @@ elif [[ $TEST_SUITE == "integration" ]]; then
 		sleep 1
 		echo -n "."
 	done
-	PULSE_OPENTSDB_HOST=$ip go test -v --tags=integration ./...
+	SNAP_OPENTSDB_HOST=$ip go test -v --tags=integration ./...
 fi

@@ -30,9 +30,9 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 
-	"github.com/intelsdi-x/pulse/control/plugin"
-	"github.com/intelsdi-x/pulse/control/plugin/cpolicy"
-	"github.com/intelsdi-x/pulse/core/ctypes"
+	"github.com/intelsdi-x/snap/control/plugin"
+	"github.com/intelsdi-x/snap/control/plugin/cpolicy"
+	"github.com/intelsdi-x/snap/core/ctypes"
 )
 
 const (
@@ -46,7 +46,7 @@ const (
 
 // Meta returns a plugin meta data
 func Meta() *plugin.PluginMeta {
-	return plugin.NewPluginMeta(name, version, pluginType, []string{plugin.PulseGOBContentType}, []string{plugin.PulseGOBContentType})
+	return plugin.NewPluginMeta(name, version, pluginType, []string{plugin.SnapGOBContentType}, []string{plugin.SnapGOBContentType})
 }
 
 //NewOpentsdbPublisher returns an instance of the OpenTSDB publisher
@@ -81,13 +81,13 @@ func (p *opentsdbPublisher) Publish(contentType string, content []byte, config m
 	var metrics []plugin.PluginMetricType
 
 	switch contentType {
-	case plugin.PulseGOBContentType:
+	case plugin.SnapGOBContentType:
 		dec := gob.NewDecoder(bytes.NewBuffer(content))
 		if err := dec.Decode(&metrics); err != nil {
 			logger.Printf("Error decoding GOB: error=%v content=%v", err, content)
 			return err
 		}
-	case plugin.PulseJSONContentType:
+	case plugin.SnapJSONContentType:
 		err := json.Unmarshal(content, &metrics)
 		if err != nil {
 			logger.Printf("Error decoding JSON: error=%v content=%v", err, content)

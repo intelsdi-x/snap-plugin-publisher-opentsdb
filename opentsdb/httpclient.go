@@ -32,7 +32,7 @@ import (
 const (
 	putEndPoint     = "/api/put"
 	contentTypeJson = "application/json"
-	userAgent       = "pulse-publisher"
+	userAgent       = "snap-publisher"
 )
 
 type HttpClient struct {
