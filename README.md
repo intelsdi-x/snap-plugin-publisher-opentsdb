@@ -36,7 +36,7 @@ It's used in the [snap framework](http://github.com:intelsdi-x/snap).
 To get started, you'll need snap and OpenTSDB running to receive and aggregate sampling data points.
 
 ### System Requirements
-* [golang 1.4+](https://golang.org/dl/)
+* [golang 1.5+](https://golang.org/dl/) (needed only for building)
 * [snap](https://github.com/intelsdi-x/snap)
 
 ### Operating systems
