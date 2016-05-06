@@ -28,6 +28,7 @@ import (
 	"time"
 
 	"github.com/intelsdi-x/snap/control/plugin"
+	"github.com/intelsdi-x/snap/core"
 	"github.com/intelsdi-x/snap/core/ctypes"
 
 	. "github.com/smartystreets/goconvey/convey"
@@ -47,12 +48,14 @@ func TestOpentsdbPublish(t *testing.T) {
 		op := NewOpentsdbPublisher()
 		cp, _ := op.GetConfigPolicy()
 		cfg, _ := cp.Get([]string{""}).Process(config)
+		tags := map[string]string{}
+		tags[core.STD_TAG_PLUGIN_RUNNING_ON] = "mac1"
 
 		Convey("Publish float metrics to OpenTSDB", func() {
-			metrics := []plugin.PluginMetricType{
-				*plugin.NewPluginMetricType([]string{"/psutil/load/load15"}, time.Now(), "mac1", nil, nil, 23.1),
-				*plugin.NewPluginMetricType([]string{"/psutil/vm/available"}, time.Now().Add(2*time.Second), "mac2", nil, nil, 23.2),
-				*plugin.NewPluginMetricType([]string{"/psutil/load/load1"}, time.Now().Add(3*time.Second), "linux3", nil, nil, 23.3),
+			metrics := []plugin.MetricType{
+				*plugin.NewMetricType(core.NewNamespace("/psutil/load/load15"), time.Now(), tags, "float64", 23.1),
+				*plugin.NewMetricType(core.NewNamespace("/psutil/vm/available"), time.Now().Add(2*time.Second), tags, "float64", 23.2),
+				*plugin.NewMetricType(core.NewNamespace("/psutil/load/load1"), time.Now().Add(3*time.Second), tags, "float64", 23.3),
 			}
 			enc.Encode(metrics)
 
@@ -61,8 +64,8 @@ func TestOpentsdbPublish(t *testing.T) {
 		})
 
 		Convey("Publish int metrics to OpenTSDB", func() {
-			metrics := []plugin.PluginMetricType{
-				*plugin.NewPluginMetricType([]string{"/psutil/vm/free"}, time.Now().Add(5*time.Second), "linux7", nil, nil, 23),
+			metrics := []plugin.MetricType{
+				*plugin.NewMetricType(core.NewNamespace("/psutil/vm/free"), time.Now().Add(5*time.Second), tags, "int", 23),
 			}
 			enc.Encode(metrics)
 

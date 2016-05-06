@@ -32,12 +32,13 @@ import (
 
 	"github.com/intelsdi-x/snap/control/plugin"
 	"github.com/intelsdi-x/snap/control/plugin/cpolicy"
+	"github.com/intelsdi-x/snap/core"
 	"github.com/intelsdi-x/snap/core/ctypes"
 )
 
 const (
 	name       = "opentsdb"
-	version    = 5
+	version    = 6
 	pluginType = plugin.PublisherPluginType
 	timeout    = 5
 	host       = "host"
@@ -78,7 +79,7 @@ func (p *opentsdbPublisher) GetConfigPolicy() (*cpolicy.ConfigPolicy, error) {
 // Publish publishes metric data to opentsdb.
 func (p *opentsdbPublisher) Publish(contentType string, content []byte, config map[string]ctypes.ConfigValue) error {
 	logger := log.New()
-	var metrics []plugin.PluginMetricType
+	var metrics []plugin.MetricType
 
 	switch contentType {
 	case plugin.SnapGOBContentType:
@@ -108,11 +109,11 @@ func (p *opentsdbPublisher) Publish(contentType string, content []byte, config m
 	var i = 0
 	for _, m := range metrics {
 		temp = DataPoint{
-			Metric:    StringValue(strings.Join(m.Namespace(), ".")),
+			Metric:    StringValue(strings.Join(m.Namespace().Strings(), ".")),
 			Timestamp: m.Timestamp().Unix(),
 			Value:     m.Data(),
 			Tags: map[string]StringValue{
-				host: StringValue(m.Source()),
+				host: StringValue(m.Tags()[core.STD_TAG_PLUGIN_RUNNING_ON]),
 			},
 		}
 
