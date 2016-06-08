@@ -108,13 +108,19 @@ func (p *opentsdbPublisher) Publish(contentType string, content []byte, config m
 	var temp DataPoint
 	var i = 0
 	for _, m := range metrics {
+		tempTags := make(map[string]StringValue)
+
+		tags := m.Tags()
+		for k, v := range tags {
+			tempTags[k] = StringValue(v)
+		}
+		tempTags[host] = StringValue(tags[core.STD_TAG_PLUGIN_RUNNING_ON])
+
 		temp = DataPoint{
 			Metric:    StringValue(strings.Join(m.Namespace().Strings(), ".")),
 			Timestamp: m.Timestamp().Unix(),
 			Value:     m.Data(),
-			Tags: map[string]StringValue{
-				host: StringValue(m.Tags()[core.STD_TAG_PLUGIN_RUNNING_ON]),
-			},
+			Tags:      tempTags,
 		}
 
 		// Omits invalid data points
