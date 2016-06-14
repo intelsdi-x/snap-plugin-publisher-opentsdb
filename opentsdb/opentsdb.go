@@ -38,7 +38,7 @@ import (
 
 const (
 	name       = "opentsdb"
-	version    = 6
+	version    = 7
 	pluginType = plugin.PublisherPluginType
 	timeout    = 5
 	host       = "host"
@@ -109,6 +109,21 @@ func (p *opentsdbPublisher) Publish(contentType string, content []byte, config m
 	var i = 0
 	for _, m := range metrics {
 		tempTags := make(map[string]StringValue)
+		isDynamic, indexes := m.Namespace().IsDynamic()
+		ns := m.Namespace().Strings()
+		if isDynamic {
+			for i, j := range indexes {
+				// The second return value from IsDynamic(), in this case `indexes`, is the index of
+				// the dynamic element in the unmodified namespace. However, here we're deleting
+				// elements, which is problematic when the number of dynamic elements in a namespace is
+				// greater than 1. Therefore, we subtract i (the loop iteration) from j
+				// (the original index) to compensate.
+				//
+				// Remove "data" from the namespace and create a tag for it
+				ns = append(ns[:j-i], ns[j-i+1:]...)
+				tempTags[m.Namespace()[j].Name] = StringValue(m.Namespace()[j].Value)
+			}
+		}
 
 		tags := m.Tags()
 		for k, v := range tags {
@@ -117,7 +132,7 @@ func (p *opentsdbPublisher) Publish(contentType string, content []byte, config m
 		tempTags[host] = StringValue(tags[core.STD_TAG_PLUGIN_RUNNING_ON])
 
 		temp = DataPoint{
-			Metric:    StringValue(strings.Join(m.Namespace().Strings(), ".")),
+			Metric:    StringValue(strings.Join(ns, ".")),
 			Timestamp: m.Timestamp().Unix(),
 			Value:     m.Data(),
 			Tags:      tempTags,
