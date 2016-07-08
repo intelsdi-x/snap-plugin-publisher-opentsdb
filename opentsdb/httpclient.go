@@ -26,6 +26,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 )
 
@@ -81,18 +82,29 @@ func (hc *HttpClient) Post(dps []DataPoint) error {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode == http.StatusNoContent {
+	switch resp.StatusCode {
+	case http.StatusNoContent, http.StatusOK:
 		return nil
-	}
+	default:
+		content, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return err
+		}
 
-	content, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
+		var details, msg string
+		var result map[string]interface{}
+		if json.Unmarshal(content, &result) == nil {
+			details = fmt.Sprintf("Details: %v", result["error"].(map[string]interface{})["details"])
 
-	var result map[string]int
-	if err := json.Unmarshal(content, &result); err != nil {
-		return err
+			msg = fmt.Sprintf("Code: %v, message: %v",
+				result["error"].(map[string]interface{})["code"],
+				result["error"].(map[string]interface{})["message"])
+		} else {
+			details = fmt.Sprintf("Details: %s", string(content))
+			msg = ""
+		}
+
+		fmt.Fprintf(os.Stderr, "Failed to post data to OpenTSDB: %s", details)
+		return fmt.Errorf("Failed to post data to OpenTSDB: %v. For more information check stderr file.", msg)
 	}
-	return fmt.Errorf("failed to post %d data to OpenTSDB, %d succeeded", result["failed"], result["success"])
 }
