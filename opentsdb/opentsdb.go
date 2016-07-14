@@ -38,7 +38,7 @@ import (
 
 const (
 	name       = "opentsdb"
-	version    = 6
+	version    = 7
 	pluginType = plugin.PublisherPluginType
 	timeout    = 5
 	host       = "host"
@@ -104,7 +104,7 @@ func (p *opentsdbPublisher) Publish(contentType string, content []byte, config m
 		handleErr(err)
 	}
 
-	pts := make([]DataPoint, len(metrics))
+	var pts []DataPoint
 	var temp DataPoint
 	var i = 0
 	for _, m := range metrics {
@@ -125,8 +125,10 @@ func (p *opentsdbPublisher) Publish(contentType string, content []byte, config m
 
 		// Omits invalid data points
 		if temp.Valid() {
-			pts[i] = temp
+			pts = append(pts, temp)
 			i++
+		} else {
+			logger.Printf("Omitted invalid data point %s (non-numeric values not allowed in OpenTSDB)", temp.Metric)
 		}
 	}
 
