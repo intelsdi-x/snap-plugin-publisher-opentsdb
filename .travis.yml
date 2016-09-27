@@ -65,6 +65,7 @@ deploy:
     secure: mDV7GsTMZfPYb9aV4kN8jyHHoyP0aNUEbPDuv+TCtmlptEbsn6pkeEr3IqRpXlDt5TCp0cwGYO5KX75hIaX1+p5pR+sBMnPzPl0PTtYxjgACQl2NQLG2s6AiWeuXLNe63nB3gnMJ4jUTPUYS5BmrK33e9gC0Af5b48KkBPmW3GwBsDh6rD2EgfMoEiRy/dH0NC7vSMGpp2oEcE/BTiM827KBVjAXi/X5YrGaI+UX7ATdjpFzvGZnYwr2Lnc95SycLUnoOGKmGxDbE8D7MZDnWDrx/XLsIo0KmTy1eSzVI2E9Pisjn1WBo9GQlModAElCdu0/MqNn47H/K8BYy1goLCxA0z7ZyOcBtbUM5PbpuCPtaSG1i+ac85P+/XdHKwpqxTkmO/4l4qXuTsTw6pIkq9XFkcOenK8O83V+f0ImcCA0JBccBvizTwKTykbAY1l0w1nvfX9kg6cTkDAVk6VQEsDRZ2sy36hOZZoz9Ua3SMgDHUBSNY+rAn/eXP6+XDeFWHnYeOTIkfnoKnCw3wygM+lFgOJLOcI+gGbOyH/CwKvxSHFouNPn1RqoX/V5Gapze7I/q4l6vxCDSiRrwF+xlJRjfd16rCwPJB4HouEwl1qB1tkIKaiFEHrbo+oDCHG5ITpEUs1i5/eA0oZluWgnOoaT1dVN6kow33fqvNNAKt4=
   file:
     - release/snap-plugin-publisher-opentsdb_linux_x86_64
+    - release/snap-plugin-publisher-opentsdb_darwin_x86_64
   skip_cleanup: true
   on:
     repo: intelsdi-x/snap-plugin-publisher-opentsdb
