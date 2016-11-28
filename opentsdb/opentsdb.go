@@ -38,7 +38,7 @@ import (
 
 const (
 	name       = "opentsdb"
-	version    = 7
+	version    = 8
 	pluginType = plugin.PublisherPluginType
 	timeout    = 5
 	host       = "host"
