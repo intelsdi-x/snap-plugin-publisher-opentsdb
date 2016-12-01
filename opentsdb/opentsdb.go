@@ -38,7 +38,7 @@ import (
 
 const (
 	name       = "opentsdb"
-	version    = 8
+	version    = 9
 	pluginType = plugin.PublisherPluginType
 	timeout    = 5
 	host       = "host"
@@ -154,7 +154,7 @@ func (p *opentsdbPublisher) Publish(contentType string, content []byte, config m
 
 	td := time.Duration(timeout * time.Second)
 	con := NewClient(u.String(), td)
-	err = con.Post(pts)
+	err = con.Save(pts)
 	if err != nil {
 		logger.Printf("Error: '%s' posting metrics: %+v", err.Error(), metrics)
 		return err

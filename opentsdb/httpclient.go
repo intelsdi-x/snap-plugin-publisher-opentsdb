@@ -32,8 +32,9 @@ import (
 
 const (
 	putEndPoint     = "/api/put"
-	contentTypeJson = "application/json"
+	contentTypeJSON = "application/json"
 	userAgent       = "snap-publisher"
+	maxChunkLength  = 25
 )
 
 type HttpClient struct {
@@ -58,7 +59,7 @@ func NewClient(url string, timeout time.Duration) *HttpClient {
 	}
 }
 
-func (hc *HttpClient) getUrl() string {
+func (hc *HttpClient) getURL() string {
 	u := url.URL{
 		Scheme: "http",
 		Host:   hc.url,
@@ -67,16 +68,40 @@ func (hc *HttpClient) getUrl() string {
 	return u.String()
 }
 
-// Post stores slides of Datapoint to OpenTSDB
-func (hc *HttpClient) Post(dps []DataPoint) error {
-	url := hc.getUrl()
+// Save saves data points in maxChunkLength size.
+func (hc *HttpClient) Save(dps []DataPoint) error {
+	url := hc.getURL()
 
+	loop := len(dps) / maxChunkLength
+	start := 0
+	end := start
+	for i := 0; i < loop; i++ {
+		end += maxChunkLength
+		chunk := dps[start:end]
+		start = end
+		err := hc.post(url, chunk)
+		if err != nil {
+			return err
+		}
+	}
+
+	remainder := len(dps) % maxChunkLength
+	if remainder > 0 {
+		end = start + remainder
+		chunk := dps[start:end]
+		return hc.post(url, chunk)
+	}
+	return nil
+}
+
+// post stores a slice of Datapoint to OpenTSDB
+func (hc *HttpClient) post(url string, dps []DataPoint) error {
 	buf, err := json.Marshal(dps)
 	if err != nil {
 		return err
 	}
 
-	resp, err := hc.httpClient.Post(url, contentTypeJson, bytes.NewReader(buf))
+	resp, err := hc.httpClient.Post(url, contentTypeJSON, bytes.NewReader(buf))
 	if err != nil {
 		return err
 	}
