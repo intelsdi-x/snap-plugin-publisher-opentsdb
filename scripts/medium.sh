@@ -6,7 +6,7 @@ set -o pipefail
 
 sudo service docker restart
 sleep 10
-docker run -d -p 4242:4242 --name=opentsdb opower/opentsdb:latest
+docker run -d -p 4242:4242 --name=opentsdb cloudflare/opentsdb:2.2.0
 
 SNAP_OPENTSDB_HOST=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' opentsdb)
 export SNAP_OPENTSDB_HOST

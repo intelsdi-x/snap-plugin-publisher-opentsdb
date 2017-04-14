@@ -2,10 +2,10 @@
 sudo: true
 language: go
 go:
-- 1.6.3
-- 1.7.3
+- 1.7.x
+- 1.8.x
 services:
-  - docker
+- docker
 env:
   global:
   - ORG_PATH=/home/travis/gopath/src/github.com/intelsdi-x
@@ -13,10 +13,10 @@ env:
   matrix:
   - TEST_TYPE=small
   - TEST_TYPE=medium
-  - TEST_TYPE=build
+  - TEST_TYPE: build
 matrix:
   exclude:
-  - go: 1.6.3
+  - go: 1.7.x
     env: TEST_TYPE=build
 before_install:
 - "[[ -d $SNAP_PLUGIN_SOURCE ]] || mkdir -p $ORG_PATH && ln -s $TRAVIS_BUILD_DIR $SNAP_PLUGIN_SOURCE"
@@ -33,9 +33,8 @@ before_deploy:
 - "./scripts/pre_deploy.sh"
 deploy:
 - provider: s3
-  access_key_id: AKIAINMB43VSSPFZISAA
-  secret_access_key:
-    secure: dVoayqI71WfQGRD2YWwdwa3bD8v7ABNKQhFamY25zDiu5mYdDT/AKqHTmxVq+p4KVoBZcQNLTDlfpXwfzPVo+m628FzF91SV9Mq9ijMQ/VPWpCjEgFeXfvNgJhm/bpxegNpEW3e2JExjN5QPC4lwL92zCgW7sm/axEZdI8Qw4NDeQabx8MvLb1TixkOsYXLBPlGD391XEMK32mys1ohCaVWUL+oVtO43WD8fDBSk2sH9lg1FVnF7sOlsATxmyny1D26UPdg1VWgDGvWv7xDEFoCPv8y6FJBAhVVgN4Y8hutAmaciI2h5AZuHaSK/UVMW4dkseZfTJlMOeQGQEJ6hWWNoi9Wp5tUj2YRWEpSoF46eHsZ4VPrMBNj7noP0zx4xST6YAmuE4ozerrtE+DZX48Lu5I6eALNeExUV9oc11rSFD++aV8jfljfJtId3kXJev98uIuJ5ti178XU+iCqa9fT6Mkk/Ay7cFuOku7eRdVdfBwalf9d4Q5oobPKE4QZ7o0mx+Fdd7XQXPGev3QZdIihtHHli3s80FLlF/jytVYc3xUDmbRt8SWUaYl316rYK+HDhmvwpgIvj/L1lnUvgi8evM4wB5TLSbi0I35QgMLphX0SPM5Jif4sr11QsYIimMQNVeNGHqF3lJatPP/3oV7dOyZu1pAWta42lSHiE8ZQ=
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
   bucket: snap.ci.snap-telemetry.io
   region: us-west-2
   skip_cleanup: true
@@ -45,11 +44,10 @@ deploy:
   on:
     repo: intelsdi-x/snap-plugin-publisher-opentsdb
     branch: master
-    condition: $TEST_TYPE = "build" && $TRAVIS_GO_VERSION = "1.7.3"
+    condition: $TEST_TYPE = "build" && $TRAVIS_GO_VERSION =~ ^1\.8(|\.[0-9]+)$
 - provider: s3
-  access_key_id: AKIAINMB43VSSPFZISAA
-  secret_access_key:
-    secure: dVoayqI71WfQGRD2YWwdwa3bD8v7ABNKQhFamY25zDiu5mYdDT/AKqHTmxVq+p4KVoBZcQNLTDlfpXwfzPVo+m628FzF91SV9Mq9ijMQ/VPWpCjEgFeXfvNgJhm/bpxegNpEW3e2JExjN5QPC4lwL92zCgW7sm/axEZdI8Qw4NDeQabx8MvLb1TixkOsYXLBPlGD391XEMK32mys1ohCaVWUL+oVtO43WD8fDBSk2sH9lg1FVnF7sOlsATxmyny1D26UPdg1VWgDGvWv7xDEFoCPv8y6FJBAhVVgN4Y8hutAmaciI2h5AZuHaSK/UVMW4dkseZfTJlMOeQGQEJ6hWWNoi9Wp5tUj2YRWEpSoF46eHsZ4VPrMBNj7noP0zx4xST6YAmuE4ozerrtE+DZX48Lu5I6eALNeExUV9oc11rSFD++aV8jfljfJtId3kXJev98uIuJ5ti178XU+iCqa9fT6Mkk/Ay7cFuOku7eRdVdfBwalf9d4Q5oobPKE4QZ7o0mx+Fdd7XQXPGev3QZdIihtHHli3s80FLlF/jytVYc3xUDmbRt8SWUaYl316rYK+HDhmvwpgIvj/L1lnUvgi8evM4wB5TLSbi0I35QgMLphX0SPM5Jif4sr11QsYIimMQNVeNGHqF3lJatPP/3oV7dOyZu1pAWta42lSHiE8ZQ=
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
   bucket: snap.ci.snap-telemetry.io
   region: us-west-2
   skip_cleanup: true
@@ -59,10 +57,9 @@ deploy:
   on:
     repo: intelsdi-x/snap-plugin-publisher-opentsdb
     tags: true
-    condition: $TEST_TYPE = "build" && $TRAVIS_GO_VERSION = "1.7.3"
+    condition: $TEST_TYPE = "build" && $TRAVIS_GO_VERSION =~ ^1\.8(|\.[0-9]+)$
 - provider: releases
-  api_key:
-    secure: mDV7GsTMZfPYb9aV4kN8jyHHoyP0aNUEbPDuv+TCtmlptEbsn6pkeEr3IqRpXlDt5TCp0cwGYO5KX75hIaX1+p5pR+sBMnPzPl0PTtYxjgACQl2NQLG2s6AiWeuXLNe63nB3gnMJ4jUTPUYS5BmrK33e9gC0Af5b48KkBPmW3GwBsDh6rD2EgfMoEiRy/dH0NC7vSMGpp2oEcE/BTiM827KBVjAXi/X5YrGaI+UX7ATdjpFzvGZnYwr2Lnc95SycLUnoOGKmGxDbE8D7MZDnWDrx/XLsIo0KmTy1eSzVI2E9Pisjn1WBo9GQlModAElCdu0/MqNn47H/K8BYy1goLCxA0z7ZyOcBtbUM5PbpuCPtaSG1i+ac85P+/XdHKwpqxTkmO/4l4qXuTsTw6pIkq9XFkcOenK8O83V+f0ImcCA0JBccBvizTwKTykbAY1l0w1nvfX9kg6cTkDAVk6VQEsDRZ2sy36hOZZoz9Ua3SMgDHUBSNY+rAn/eXP6+XDeFWHnYeOTIkfnoKnCw3wygM+lFgOJLOcI+gGbOyH/CwKvxSHFouNPn1RqoX/V5Gapze7I/q4l6vxCDSiRrwF+xlJRjfd16rCwPJB4HouEwl1qB1tkIKaiFEHrbo+oDCHG5ITpEUs1i5/eA0oZluWgnOoaT1dVN6kow33fqvNNAKt4=
+  api_key: $GITHUB_API_KEY
   file:
     - release/snap-plugin-publisher-opentsdb_linux_x86_64
     - release/snap-plugin-publisher-opentsdb_darwin_x86_64
@@ -70,4 +67,4 @@ deploy:
   on:
     repo: intelsdi-x/snap-plugin-publisher-opentsdb
     tags: true
-    condition: $TEST_TYPE = "build" && $TRAVIS_GO_VERSION = "1.7.3"
+    condition: $TEST_TYPE = "build" && $TRAVIS_GO_VERSION =~ ^1\.8(|\.[0-9]+)$
